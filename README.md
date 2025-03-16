@@ -9,6 +9,7 @@ A simple REST API built with Node.js and Express that connects to Supabase and p
 - Get user by email
 - Error handling and proper status codes
 - Environment variable configuration
+- Swagger API documentation
 
 ## Tech Stack
 
@@ -17,6 +18,7 @@ A simple REST API built with Node.js and Express that connects to Supabase and p
 - Supabase (PostgreSQL database)
 - dotenv (for environment variables)
 - CORS support
+- Swagger (API documentation)
 
 ## Project Structure
 
@@ -29,11 +31,12 @@ nodejs-supabase
 ├── package.json           # Project dependencies and scripts
 ├── README.md              # Project documentation
 ├── config/
-│   └── supabaseClient.js  # Supabase client configuration
+│   ├── supabaseClient.js  # Supabase client configuration
+│   └── swagger.js         # Swagger configuration
 ├── controllers/
 │   └── userController.js  # User controller functions
 ├── routes/
-│   └── userRoutes.js      # API route definitions
+│   └── userRoutes.js      # API route definitions with Swagger docs
 └── services/
     └── userService.js     # Business logic for user operations
 ```
