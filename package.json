@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-supabase",
+  "name": "moneywise-api",
   "version": "1.0.0",
   "description": "Node.js API with Supabase integration",
   "type": "module",
@@ -12,7 +12,7 @@
     "nodejs",
     "supabase"
   ],
-  "author": "Manthan Ankolekar",
+  "author": "Shailendra Bhargava",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
