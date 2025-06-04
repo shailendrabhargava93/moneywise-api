@@ -1,14 +1,11 @@
 {
   "name": "moneywise-api",
   "version": "1.0.0",
-  "description": "Node.js API with Supabase integration",
+  "description": "Moneywise api for budget tracking",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "build": "echo 'Build complete'",
-    "vercel-build": "echo 'Vercel build complete'"
+    "start": "node index.js"
   },
   "keywords": [
     "nodejs",
