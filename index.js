@@ -7,19 +7,37 @@ import budgetRoutes from "./routes/budgetRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import { swaggerUi, specs } from "./config/swagger.js";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://moneywise-api.vercel.com'] // Replace with your actual frontend domain
+    : ['http://localhost:5000', 'http://localhost:3000'], // Add your local development ports
+  credentials: true
+}));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Add request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
 
 // Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-// Routes
+// API Routes with /api prefix for better organization
+app.use("/api/user", userRoutes);
+app.use("/api/txn", transactionRoutes);
+app.use("/api/budget", budgetRoutes);
+app.use("/api/label", labelRoutes);
+
+// Backward compatibility routes (without /api prefix)
 app.use("/user", userRoutes);
 app.use("/txn", transactionRoutes);
 app.use("/budget", budgetRoutes);
@@ -32,9 +50,16 @@ app.get("/", (req, res) => {
     : `https://${req.get('host')}`;
     
   res.status(200).json({
-    message: "API is running...",
+    message: "MoneyWise API is running successfully!",
+    version: "1.0.0",
     documentationLink: `${baseUrl}/api-docs`,
     endpoints: {
+      users: `${baseUrl}/api/user`,
+      transactions: `${baseUrl}/api/txn`,
+      budgets: `${baseUrl}/api/budget`,
+      labels: `${baseUrl}/api/label`
+    },
+    legacyEndpoints: {
       users: `${baseUrl}/user`,
       transactions: `${baseUrl}/txn`,
       budgets: `${baseUrl}/budget`,
@@ -45,15 +70,45 @@ app.get("/", (req, res) => {
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: "OK", 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
-// For Vercel deployment
+// API status endpoint
+app.get("/api", (req, res) => {
+  res.status(200).json({
+    message: "API endpoints are working",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.method} ${req.path} not found`,
+    availableRoutes: ['/api/user', '/api/txn', '/api/budget', '/api/label', '/api-docs']
+  });
+});
+
+// For local development
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📚 API documentation available at http://localhost:${PORT}/api-docs`);
   });
 }
 
