@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 //user
-app.use("/api", userRoutes);
+app.use("/user", userRoutes);
 // transactions
 app.use("/txn", transactionRoutes);
 //budgets
