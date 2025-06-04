@@ -2,20 +2,21 @@ import supabase from "../config/supabaseClient.js";
 
 export const getAllLabelsByEmail = async (email) => {
   try {
-    const { data: labels, error: error } = await supabase
+    const { data, error } = await supabase
       .from("labels")
-      .select("*")
+      .select("labels")
       .eq("user", email);
 
     if (error) {
-      throw new Error(`Error fetching budgets: ${error.message}`);
+      throw new Error(`Error fetching labels: ${error.message}`);
     }
 
-    if (!labels || labels.length === 0) {
+    if (!data || data.length === 0) {
       return [];
     }
 
-    return labels;
+    // Split the string by comma and flatten the array
+    return data.flatMap(item => item.labels.split('|'));
   } catch (error) {
     console.error("Error in getAllLabelsByEmail:", error);
     throw error;
