@@ -194,7 +194,7 @@ const getTransactionsByBudgetIdsAndEmail = async (budgetIds, email) => {
   const { data, error } = await supabase
     .from("transactions")
     .select("amount, date")
-    .eq("createdBy", email)
+    .eq("user", email)
     .in("budgetId", budgetIds);
 
   if (error) throw new Error(error.message);
