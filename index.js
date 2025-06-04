@@ -12,15 +12,25 @@ dotenv.config();
 
 const app = express();
 
+const CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
+const CUSTOM_JS = [
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js",
+];
+
 // Middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://moneywise-api.vercel.com'] // Replace with your actual frontend domain
-    : ['http://localhost:5000', 'http://localhost:3000'], // Add your local development ports
-  credentials: true
-}));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://moneywise-api.vercel.com"] // Replace with your actual frontend domain
+        : ["http://localhost:5000", "http://localhost:3000"], // Add your local development ports
+    credentials: true,
+  })
+);
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Add request logging for debugging
 app.use((req, res, next) => {
@@ -29,7 +39,11 @@ app.use((req, res, next) => {
 });
 
 // Swagger documentation route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { customCss: CSS_URL, customJs: CUSTOM_JS })
+);
 
 // API Routes with /api prefix for better organization
 app.use("/api/user", userRoutes);
@@ -45,10 +59,10 @@ app.use("/label", labelRoutes);
 
 // Root route
 app.get("/", (req, res) => {
-  const baseUrl = req.get('host').includes('localhost') 
-    ? `${req.protocol}://${req.get('host')}`
-    : `https://${req.get('host')}`;
-    
+  const baseUrl = req.get("host").includes("localhost")
+    ? `${req.protocol}://${req.get("host")}`
+    : `https://${req.get("host")}`;
+
   res.status(200).json({
     message: "MoneyWise API is running successfully!",
     version: "1.0.0",
@@ -57,23 +71,23 @@ app.get("/", (req, res) => {
       users: `${baseUrl}/api/user`,
       transactions: `${baseUrl}/api/txn`,
       budgets: `${baseUrl}/api/budget`,
-      labels: `${baseUrl}/api/label`
+      labels: `${baseUrl}/api/label`,
     },
     legacyEndpoints: {
       users: `${baseUrl}/user`,
       transactions: `${baseUrl}/txn`,
       budgets: `${baseUrl}/budget`,
-      labels: `${baseUrl}/label`
-    }
+      labels: `${baseUrl}/label`,
+    },
   });
 });
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.status(200).json({ 
-    status: "OK", 
+  res.status(200).json({
+    status: "OK",
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || "development",
   });
 });
 
@@ -81,34 +95,45 @@ app.get("/health", (req, res) => {
 app.get("/api", (req, res) => {
   res.status(200).json({
     message: "API endpoints are working",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
+  console.error("Error:", err);
   res.status(500).json({
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    error: "Internal Server Error",
+    message:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Something went wrong",
   });
 });
 
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
-    error: 'Not Found',
+    error: "Not Found",
     message: `Route ${req.method} ${req.path} not found`,
-    availableRoutes: ['/api/user', '/api/txn', '/api/budget', '/api/label', '/api-docs']
+    availableRoutes: [
+      "/api/user",
+      "/api/txn",
+      "/api/budget",
+      "/api/label",
+      "/api-docs",
+    ],
   });
 });
 
 // For local development
 const PORT = process.env.PORT || 5000;
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📚 API documentation available at http://localhost:${PORT}/api-docs`);
+    console.log(
+      `📚 API documentation available at http://localhost:${PORT}/api-docs`
+    );
   });
 }
 
