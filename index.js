@@ -28,7 +28,10 @@ app.use("/budget", budgetRoutes);
 app.use("/label", labelRoutes);
 
 app.get("/", (req, res) => {
-  res.send("API is running... <a href='/api-docs'>View API documentation</a>");
+  res.status(200).send({
+    message: "API is running...",
+    documentationLink: `${req.protocol}://${req.get('host')}/api-docs`
+  });
 });
 
 const PORT = process.env.PORT || 5000;
