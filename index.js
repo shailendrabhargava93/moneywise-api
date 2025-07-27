@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
-import labelRoutes from "./routes/labelRoutes.js";
+import memberRoutes from "./routes/memberRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import { swaggerUi, specs } from "./config/swagger.js";
@@ -49,13 +49,13 @@ app.use(
 app.use("/api/user", userRoutes);
 app.use("/api/txn", transactionRoutes);
 app.use("/api/budget", budgetRoutes);
-app.use("/api/label", labelRoutes);
+app.use("/api/members", memberRoutes);
 
 // Backward compatibility routes (without /api prefix)
 app.use("/user", userRoutes);
 app.use("/txn", transactionRoutes);
 app.use("/budget", budgetRoutes);
-app.use("/label", labelRoutes);
+app.use("/members", memberRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -71,13 +71,13 @@ app.get("/", (req, res) => {
       users: `${baseUrl}/api/user`,
       transactions: `${baseUrl}/api/txn`,
       budgets: `${baseUrl}/api/budget`,
-      labels: `${baseUrl}/api/label`,
+      members: `${baseUrl}/api/members`,
     },
     legacyEndpoints: {
       users: `${baseUrl}/user`,
       transactions: `${baseUrl}/txn`,
       budgets: `${baseUrl}/budget`,
-      labels: `${baseUrl}/label`,
+      members: `${baseUrl}/members`,
     },
   });
 });
