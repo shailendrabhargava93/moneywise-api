@@ -46,8 +46,8 @@ export const getMembers = async (email) => {
   try {
     const { data, error } = await supabase
       .from("members")
-      .select("*")
-      .eq("email", email);
+      .select("memberName", "memberAvatar")
+      .eq("user", email);
 
     if (error) {
       throw new Error(`Error fetching members: ${error.message}`);
