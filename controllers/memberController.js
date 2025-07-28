@@ -50,7 +50,7 @@ export const getAllMembers = async (req, res) => {
         error: 'Email parameter is required'
       });
     }
-    const members = await getMembers();
+    const members = await getMembers(email);
     res.status(200).json(members);
   } catch (error) {
     console.error('Error in getAllMembers:', error);
