@@ -44,16 +44,16 @@ export const createMembers = async (membersData) => {
 
 export const getMembers = async (email) => {
   try {
-    const { data, error } = await supabase
+    const { data: members, error } = await supabase
       .from("members")
-      .select("memberName", "memberAvatar")
+      .select("*")
       .eq("user", email);
 
     if (error) {
       throw new Error(`Error fetching members: ${error.message}`);
     }
-    console.log("Fetched members:", data);
-    return data;
+    console.log("Fetched members:", members);
+    return members;
   } catch (error) {
     console.error("Error in getMembers:", error);
     throw error;
