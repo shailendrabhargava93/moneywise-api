@@ -47,7 +47,7 @@ export const getMembers = async (email) => {
     console.log("Fetching members for email:", email);
     const { data: members, error } = await supabase
       .from("members")
-      .select("*")
+      .select("memberName", "memberAvatar")
       .eq("user", email);
 
     if (error) {
