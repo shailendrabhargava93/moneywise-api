@@ -13,20 +13,39 @@ dotenv.config();
 const app = express();
 
 const CSS_URL =
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css";
+  "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui.css";
 const CUSTOM_JS = [
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js",
+  "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-bundle.js",
+  "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js",
 ];
+
+// Swagger documentation route
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, {
+    customCssUrl: CSS_URL,
+    customJs: CUSTOM_JS,
+  })
+);
 
 // Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://moneywise-api.vercel.app" // Replace with your actual frontend domain (note: .app not .com for Vercel)
-        : ["http://localhost:5000", "http://localhost:3000", "http://localhost:4200"], // Add your local development ports
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        "https://moneywise-api.vercel.app", // Production frontend domain
+        "http://localhost:5000",
+        "http://localhost:3000",
+        "http://localhost:4200",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -37,13 +56,6 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
-
-// Swagger documentation route
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  //swaggerUi.setup(specs, { customCss: CSS_URL, customJs: CUSTOM_JS })
-);
 
 // API Routes with /api prefix for better organization
 app.use("/api/user", userRoutes);
