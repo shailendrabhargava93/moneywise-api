@@ -13,10 +13,10 @@ dotenv.config();
 const app = express();
 
 const CSS_URL =
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css";
 const CUSTOM_JS = [
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js",
 ];
 
 // Middleware
@@ -25,7 +25,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://moneywise-api.vercel.com"] // Replace with your actual frontend domain
+        ? "https://moneywise-api.vercel.app" // Replace with your actual frontend domain (note: .app not .com for Vercel)
         : ["http://localhost:5000", "http://localhost:3000"], // Add your local development ports
     credentials: true,
   })
