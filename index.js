@@ -26,7 +26,7 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? "https://moneywise-api.vercel.app" // Replace with your actual frontend domain (note: .app not .com for Vercel)
-        : ["http://localhost:5000", "http://localhost:3000"], // Add your local development ports
+        : ["http://localhost:5000", "http://localhost:3000", "http://localhost:4200"], // Add your local development ports
     credentials: true,
   })
 );
@@ -42,20 +42,20 @@ app.use((req, res, next) => {
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(specs, { customCss: CSS_URL, customJs: CUSTOM_JS })
+  //swaggerUi.setup(specs, { customCss: CSS_URL, customJs: CUSTOM_JS })
 );
 
 // API Routes with /api prefix for better organization
 app.use("/api/user", userRoutes);
 app.use("/api/txn", transactionRoutes);
 app.use("/api/budget", budgetRoutes);
-app.use("/api/members", memberRoutes);
+app.use("/api/member", memberRoutes);
 
 // Backward compatibility routes (without /api prefix)
 app.use("/user", userRoutes);
 app.use("/txn", transactionRoutes);
 app.use("/budget", budgetRoutes);
-app.use("/members", memberRoutes);
+app.use("/member", memberRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -71,13 +71,13 @@ app.get("/", (req, res) => {
       users: `${baseUrl}/api/user`,
       transactions: `${baseUrl}/api/txn`,
       budgets: `${baseUrl}/api/budget`,
-      members: `${baseUrl}/api/members`,
+      members: `${baseUrl}/api/member`,
     },
     legacyEndpoints: {
       users: `${baseUrl}/user`,
       transactions: `${baseUrl}/txn`,
       budgets: `${baseUrl}/budget`,
-      members: `${baseUrl}/members`,
+      members: `${baseUrl}/member`,
     },
   });
 });
@@ -120,7 +120,7 @@ app.use((req, res) => {
       "/api/user",
       "/api/txn",
       "/api/budget",
-      "/api/label",
+      "/api/member",
       "/api-docs",
     ],
   });
