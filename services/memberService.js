@@ -24,14 +24,14 @@ export const getMembers = async (email) => {
     const { data: members, error } = await supabase
       .from("members")
       .select("*")
-      .eq("user", email);
+      .eq("email", email);
 
     if (error) {
       throw new Error(`Error fetching members: ${error.message}`);
     }
     return members.map(m => ({
-      name: m.memberName,
-      avatar: m.memberAvatar
+      name: m.name,
+      avatar: m.avatar
     }));
   } catch (error) {
     console.error("Error in getMembers:", error);
