@@ -1,10 +1,10 @@
 import supabase from "../config/supabaseClient.js";
 
-export const createMembers = async (membersData) => {
+export const createMembers = async ({ members, email }) => {
   try {
     const { data, error } = await supabase
       .from("members")
-      .insert([membersData])
+      .insert([{ ...members, email }])
       .select();
 
     if (error) {
